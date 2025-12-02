@@ -197,11 +197,20 @@ export const handler = async (event) => {
         .slice()
         .sort((a, b) => new Date(b.date) - new Date(a.date));
 
+      // pagination
+      const page = parseInt(qp?.page) || 1; // default page 1
+      const perPage = 10; // 10 per page
+      const start = (page - 1) * perPage;
+      const paginated = sorted.slice(start, start + perPage);
+
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({
-          transactions: sorted,
+          page,
+          perPage,
+          total: sorted.length,
+          transactions: paginated,
         }),
       };
     }
